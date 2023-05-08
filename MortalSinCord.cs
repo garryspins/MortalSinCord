@@ -4,7 +4,7 @@ using DiscordRPC;
 using Il2Cpp;
 using Il2CppPlayerLogic;
 
-[assembly: MelonInfo(typeof(MortalSinCord.MortalSinCord), "MortalSinCord", "1.0.0", "MustBeLeaving")]
+[assembly: MelonInfo(typeof(MortalSinCord.MortalSinCord), "MortalSinCord", "1.1.0", "MustBeLeaving")]
 [assembly: MelonGame("Doronik Games", "Mortal Sin")]
 
 namespace MortalSinCord {
@@ -55,6 +55,10 @@ namespace MortalSinCord {
                 _ => "A"
             } + "-" + gs.currentLevelProgressKey.AreaLevel + ")";
         }
+        private bool GetIsHardMode() {
+            return Global._HardMode_k__BackingField;
+        }
+
         private void UpdateActivity() {
             if (client == null) {
                 MelonLogger.Error($"NullClient!");
@@ -93,8 +97,9 @@ namespace MortalSinCord {
                 return;
             }
 
+            bool hm = GetIsHardMode();
             GameSession gs = GameObject.Find("GameSession").GetComponent<GameSession>();
-            
+
             client.SetPresence(new RichPresence() {
                 Details = GetPlayerLocation(gs),
                 State = GetPlayerHealthMessage(pl.health),
@@ -102,8 +107,8 @@ namespace MortalSinCord {
                     Start = time
                 },
                 Assets = new Assets() {
-                    LargeImageKey = "ms_header",
-                    LargeImageText = "Mortal Sin",
+                    LargeImageKey = hm ? "ms_header_pot" : "ms_header",
+                    LargeImageText = hm ? "Mortal Sin - Path Of Torment" : "Mortal Sin",
                     SmallImageKey = Global.PlayerClass.name switch {
                         "Struggler" => "sword",
                         "Mage" => "mace",
